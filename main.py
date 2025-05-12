@@ -5,9 +5,11 @@ import os
 app = FastAPI()
 
 class BollettaInput(BaseModel):
-    consumo_kwh: float
+    kwh_totali: float
+    mesi_bolletta: int
+    spesa_materia_energia: float
     tipo_fornitura: str  # "Luce" o "Gas"
-    data_riferimento: str  # formato "YYYY-MM-DD"
+    data_riferimento: str  # "YYYY-MM-DD"
 
 @app.post("/confronta")
 def confronta_bolletta(bolletta: BollettaInput):
