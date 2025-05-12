@@ -18,9 +18,9 @@ def get_offerte(tipo_fornitura):
 
 def get_prezzo_mercato(tipo_fornitura, data_str):
     table = Table(API_KEY, BASE_ID, TBL_MERCATO)
-    formula = f"AND({{Tipo fornitura}} = '{tipo_fornitura}', IS_SAME({{Mese}}, DATESTR('{data_str}'), 'month'))"
-    encoded_formula = quote(formula)
-    records = table.all(formula=encoded_formula)
+
+    formula = f"AND({{Tipo fornitura}} = '{tipo_fornitura}', IS_SAME({{Mese}}, DATETIME_PARSE('{data_str}'), 'month'))"
+    records = table.all(formula=formula)
 
     if not records:
         raise Exception(f"Nessun prezzo trovato per {tipo_fornitura} nel mese {data_str}")
