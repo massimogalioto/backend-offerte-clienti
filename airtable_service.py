@@ -2,6 +2,8 @@ import os
 from pyairtable import Table
 from dotenv import load_dotenv
 from datetime import datetime
+from urllib.parse import quote
+
 
 load_dotenv()
 
@@ -16,8 +18,11 @@ def get_offerte(tipo_fornitura):
 
 def get_prezzo_mercato(tipo_fornitura, data_str):
     table = Table(API_KEY, BASE_ID, TBL_MERCATO)
-    mese = datetime.strptime(data_str, "%Y-%m-%d").strftime("%Y-%m-01")
-    records = table.all(formula=f"AND({{Tipo fornitura}} = '{tipo_fornitura}', {{Mese}} = '{mese}')")
+    formula = f"AND({{Tipo fornitura}} = '{tipo_fornitura}', IS_SAME({{Mese}}, DATESTR('{data_str}'), 'month'))"
+    encoded_formula = quote(formula)
+    records = table.all(formula=encoded_formula)
+
     if not records:
-        raise Exception(f"Nessun prezzo trovato per {tipo_fornitura} nel mese {mese}")
+        raise Exception(f"Nessun prezzo trovato per {tipo_fornitura} nel mese {data_str}")
+
     return float(records[0]["fields"].get("Prezzo medio €/kWh", 0))
