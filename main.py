@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from confronto import confronta_offerte
-
+import os
 app = FastAPI()
 
 class BollettaInput(BaseModel):
@@ -16,3 +16,11 @@ def confronta_bolletta(bolletta: BollettaInput):
         return {"offerte": risultato}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/env")
+def leggi_variabili():
+    return {
+        "AIRTABLE_API_KEY": os.getenv("AIRTABLE_API_KEY"),
+        "AIRTABLE_BASE_ID": os.getenv("AIRTABLE_BASE_ID"),
+        "OFFERTE": os.getenv("AIRTABLE_OFFERTE_TABLE"),
+        "MERCATO": os.getenv("AIRTABLE_MERCATO_TABLE"),
+    }        
