@@ -1,21 +1,34 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from confronto import confronta_offerte
-from fastapi import Header
+import os
+
 app = FastAPI()
 
-# Nuova struttura input: basata sui dati reali della bolletta
-class BollettaInput(BaseModel):
-    kwh_totali: float                     # Energia totale della bolletta (es. 450 kWh)
-    mesi_bolletta: int                    # Numero di mesi coperti dalla bolletta (es. 2)
-    spesa_materia_energia: float          # Spesa totale per la voce "materia energia"
-    tipo_fornitura: str                   # "Luce" o "Gas"
-    data_riferimento: str                 # es. "2025-04-01"
+# CORS: accetta richieste dal frontend (modifica il dominio se pubblichi su Vercel)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In produzione: ["https://madonie-front.vercel.app"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# Modello dei dati in input
+class BollettaInput(BaseModel):
+    kwh_totali: float
+    mesi_bolletta: int
+    spesa_materia_energia: float
+    tipo_fornitura: str  # "Luce" o "Gas"
+    data_riferimento: str  # formato "YYYY-MM-DD"
+
+# Endpoint protetto con chiave API
 @app.post("/confronta")
 def confronta_bolletta(bolletta: BollettaInput, x_api_key: str = Header(None)):
-    import os
-    if x_api_key != os.getenv("API_SECRET_KEY"):
+    secret_key = os.getenv("API_SECRET_KEY")
+
+    if secret_key and x_api_key != secret_key:
         raise HTTPException(status_code=401, detail="Chiave API non valida")
 
     try:
