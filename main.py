@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-# CORS: accetta richieste dal frontend (modifica il dominio se pubblichi su Vercel)
+# CORS: accetta richieste dal frontend (modifica il dominio se pubblichi su Vercel )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # In produzione: ["https://madonie-front.vercel.app"]
