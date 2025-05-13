@@ -31,7 +31,7 @@ def confronta_offerte(bolletta):
         else:
             continue
 
-        costo_stimato = round(prezzo_kwh * kwh_mensili + costo_fisso, 2)
+        costo_stimato = round((prezzo_kwh * kwh_mensili) + costo_fisso, 2)
         delta = costo_stimato - spesa_mensile
 
         if delta < 0:
