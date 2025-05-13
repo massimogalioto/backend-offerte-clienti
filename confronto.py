@@ -50,7 +50,7 @@ def confronta_offerte(bolletta):
             "costo_fisso": costo_fisso,
             "totale_simulato": costo_stimato,
             "prezzo_effettivo_pagato": round(prezzo_effettivo, 4),
-            "differenza_€_mese": round(delta, 2),
+            "differenza_mensile": round(delta, 2),
             "tipo_differenza": tipo_diff,
             "percentuale": round(percentuale, 2)
         })
