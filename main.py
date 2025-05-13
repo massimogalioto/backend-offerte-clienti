@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from confronto import confronta_offerte
+from ai_mesi import chiedi_ai_mesi
 import os
 
 app = FastAPI()
