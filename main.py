@@ -5,7 +5,7 @@ from confronto import confronta_offerte
 from ai_mesi import chiedi_ai_mesi
 from upload_pdf import router as upload_router
 from analizza_cte import router as analizza_router
-from salva_offerta_endpoint import router as salva_offerta_router
+from salva_offerte_endpoint import router as salva_offerta_router
 import os
 app.include_router(salva_offerta_router)
 app = FastAPI(
