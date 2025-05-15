@@ -7,3 +7,4 @@ PyPDF2
 aiofiles
 requests
 python-multipart
+openai>=1.0.0
