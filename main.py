@@ -34,7 +34,7 @@ class BollettaInput(BaseModel):
     mesi_bolletta: int
     spesa_materia_energia: float
     tipo_fornitura: str  # "Luce" o "Gas"
-     tipologia_cliente: str  # "Residenziale" o "Business"
+    tipologia_cliente: str  # "Residenziale" o "Business"
     data_riferimento: str  # formato "YYYY-MM-DD"
 
 class PeriodoRequest(BaseModel):
