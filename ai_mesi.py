@@ -24,6 +24,7 @@ def chiedi_ai_mesi(periodo: str) -> int:
             temperature=0
         )
         content = response.choices[0].message["content"].strip()
+        print("[RISPOSTA GPT]:", content)  # 🔍 Debug log
         mesi = estrai_numero(content)
         return max(1, mesi) if mesi is not None else None
     except Exception as e:
