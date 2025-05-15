@@ -13,7 +13,7 @@ def estrai_numero(content: str) -> int:
 def chiedi_ai_mesi(periodo: str) -> int:
     prompt = (
         f"Quanti mesi copre la seguente bolletta? "
-        f"Rispondi solo con un numero intero.\n\n"
+        f"Rispondi solo con un numero intero. senza altre considerazioni, rispondi ad esempio solo con 2, 3 senza scrivere perfetto ok o cose simili\n\n"
         f"Periodo: \"{periodo}\""
     )
 
