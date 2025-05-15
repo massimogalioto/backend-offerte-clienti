@@ -11,7 +11,7 @@ BASE_ID = os.getenv("AIRTABLE_BASE_ID")
 TBL_OFFERTE = os.getenv("AIRTABLE_OFFERTE_TABLE")
 TBL_MERCATO = os.getenv("AIRTABLE_MERCATO_TABLE")
 
-def get_offerte(tipo_fornitura):
+def get_offerte(tipo_fornitura, tipologia_cliente):
     table = Table(API_KEY, BASE_ID, TBL_OFFERTE)
     return table.all(formula=f"{{Tipo fornitura}} = '{tipo_fornitura}', {{Tipologia cliente}} = '{tipologia_cliente}'")
 
