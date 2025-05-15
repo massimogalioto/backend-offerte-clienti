@@ -1,12 +1,12 @@
 import os
-import openai
 import json
 import re
 from dotenv import load_dotenv
+from openai import OpenAI
 
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def estrai_dati_offerta_cte(testo: str) -> dict:
     try:
@@ -24,22 +24,22 @@ def estrai_dati_offerta_cte(testo: str) -> dict:
             "- vincoli (es. 'Durata minima 12 mesi') o null\n"
             "- tipo_fornitura (Luce o Gas)\n\n"
             "Testo da analizzare:\n"
-            f"{testo[:7000]}"  # limitiamo lunghezza se serve
+            f"{testo[:7000]}"
         )
 
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "Sei un assistente esperto in offerte luce e gas."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.2,
-            max_tokens=500
+            max_tokens=600
         )
 
         content = response.choices[0].message.content
 
-        # Rimuove eventuali blocchi markdown ```json
+        # Rimuove eventuali blocchi markdown tipo ```json
         json_text = re.sub(r"```json|```", "", content).strip()
 
         return json.loads(json_text)
