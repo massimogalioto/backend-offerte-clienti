@@ -1,53 +1,51 @@
 import os
 import openai
+import json
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Prompt base
-PROMPT_BASE = """
-Estrai dal seguente testo della CTE (Condizioni Tecnico Economiche) i seguenti dati:
-- Fornitore
-- Nome offerta
-- Tipologia tariffa: Fisso o Variabile
-- Prezzo €/kWh (se Fisso)
-- Spread €/kWh (se Variabile)
-- Costo fisso mensile (in €)
-- Validità offerta (se presente)
-- Eventuali vincoli contrattuali rilevanti
-
-Restituisci solo un oggetto JSON con le seguenti chiavi:
-{
-  "fornitore": "",
-  "nome_offerta": "",
-  "tariffa": "Fisso | Variabile",
-  "prezzo_kwh": numero o null,
-  "spread": numero o null,
-  "costo_fisso": numero,
-  "validita": "",
-  "vincoli": ""
-}
-
-Testo CTE:
-"""
-
-
-def estrai_dati_cte(text: str) -> dict:
-    prompt = PROMPT_BASE + text[:10000]  # limitiamo il testo per evitare superamento token
-
+def estrai_dati_offerta_cte(testo: str) -> dict:
     try:
-        client = openai.OpenAI()
-        response = client.chat.completions.create(
-            model="gpt-4-turbo",
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3
+        prompt = (
+            "Estrai i dati principali dell'offerta luce o gas da questa CTE (Condizione Tecnico Economica) e restituiscili in formato JSON.\n\n"
+            "Campi richiesti:\n"
+            "- fornitore (es. Enel Energia)\n"
+            "- nome_offerta (nome commerciale dell'offerta)\n"
+            "- tipologia_cliente (Residenziale o Business)\n"
+            "- tariffa (Fisso o Variabile)\n"
+            "- prezzo_kwh (solo se tariffa Fisso, es. 0.145) oppure null\n"
+            "- spread (solo se tariffa Variabile, es. 0.0135) oppure null\n"
+            "- costo_fisso (mensile in €)\n"
+            "- validita (es. 'fino al 30/06/2025') o null\n"
+            "- vincoli (es. 'Durata minima 12 mesi') o null\n"
+            "- tipo_fornitura (Luce o Gas)\n\n"
+            "Testo da analizzare:\n"
+            f"{testo[:7000]}"  # limitiamo lunghezza se serve
         )
 
-        content = response.choices[0].message.content.strip()
-        return eval(content) if content.startswith("{") else {"errore": "Formato non riconosciuto", "output": content}
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "Sei un assistente esperto in offerte luce e gas."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.2,
+            max_tokens=500
+        )
+
+        content = response.choices[0].message.content
+
+        # Rimuove eventuali blocchi markdown ```json
+        json_text = re.sub(r"```json|```", "", content).strip()
+
+        return json.loads(json_text)
 
     except Exception as e:
-        return {"errore": str(e)}
+        return {
+            "errore": "Formato non riconosciuto o parsing fallito",
+            "output": content if 'content' in locals() else str(e)
+        }
