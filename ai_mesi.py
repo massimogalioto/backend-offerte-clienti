@@ -18,12 +18,13 @@ def chiedi_ai_mesi(periodo: str) -> int:
     )
 
     try:
-        response = openai.ChatCompletion.create(
+        client = openai.OpenAI()
+        response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0
         )
-        content = response.choices[0].message["content"].strip()
+        content = response.choices[0].message.content.strip()
         print("[RISPOSTA GPT]:", content)  # 🔍 Debug log
         mesi = estrai_numero(content)
         return max(1, mesi) if mesi is not None else None
