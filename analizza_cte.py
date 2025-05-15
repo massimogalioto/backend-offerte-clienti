@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from estrai_dati_cte import estrai_dati_cte
+from estrai_dati_cte import estrai_dati_offerta_cte
 
 router = APIRouter()
 
@@ -12,5 +12,5 @@ def analizza_cte(data: CTETextRequest):
     if not data.testo.strip():
         raise HTTPException(status_code=400, detail="Testo CTE mancante")
 
-    risultato = estrai_dati_cte(data.testo)
+    risultato = estrai_dati_offerta_cte(data.testo)
     return risultato
