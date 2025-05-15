@@ -13,7 +13,7 @@ TBL_MERCATO = os.getenv("AIRTABLE_MERCATO_TABLE")
 
 def get_offerte(tipo_fornitura):
     table = Table(API_KEY, BASE_ID, TBL_OFFERTE)
-    return table.all(formula=f"{{Tipo fornitura}} = '{tipo_fornitura}'")
+    return table.all(formula=f"{{Tipo fornitura}} = '{tipo_fornitura}', {{Tipologia cliente}} = '{tipologia_cliente}'")
 
 def get_prezzo_mercato(tipo_fornitura, data_str):
     table = Table(API_KEY, BASE_ID, TBL_MERCATO)
