@@ -6,13 +6,14 @@ def confronta_offerte(bolletta):
     mesi_bolletta = bolletta.mesi_bolletta
     spesa_materia_energia = bolletta.spesa_materia_energia
     tipo_fornitura = bolletta.tipo_fornitura
+    tipologia_cliente = bolletta.tipologia_cliente
     data = bolletta.data_riferimento
 
     kwh_mensili = kwh_totali / mesi_bolletta
     spesa_mensile = spesa_materia_energia / mesi_bolletta
     prezzo_effettivo = spesa_mensile / kwh_mensili
 
-    offerte = get_offerte(tipo_fornitura)
+    offerte = get_offerte(tipo_fornitura, tipologia_cliente)
     prezzo_mercato = get_prezzo_mercato(tipo_fornitura, data)
 
     confronti = []
