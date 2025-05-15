@@ -3,11 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from confronto import confronta_offerte
 from ai_mesi import chiedi_ai_mesi
+from upload_pdf import router as upload_router
+from analizza_cte import router as analizza_router
 import os
 
 app = FastAPI(
     title="Servizio confronto bollette",
-    description="API che confronta offerte luce/gas e calcola il numero di mesi da un intervallo testuale tramite AI.",
+    description="API che confronta offerte luce/gas, calcola mesi da testo e analizza CTE PDF con AI.",
     version="1.0.0"
 )
 
@@ -19,6 +21,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Routers per upload e analisi CTE
+app.include_router(upload_router)
+app.include_router(analizza_router)
 
 # 📦 Modelli dati
 class BollettaInput(BaseModel):
