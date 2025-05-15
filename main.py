@@ -46,7 +46,11 @@ def confronta_bolletta(bolletta: BollettaInput, x_api_key: str = Header(None)):
 
 # 🧠 Endpoint AI per calcolo mesi
 @app.post("/calcola-mesi", summary="Calcola i mesi da un intervallo testuale")
-def calcola_mesi(body: PeriodoRequest):
+def calcola_mesi(body: PeriodoRequest, x_api_key: str = Header(None)):
+    secret_key = os.getenv("API_SECRET_KEY")
+    if secret_key and x_api_key != secret_key:
+        raise HTTPException(status_code=401, detail="Chiave API non valida")
+
     mesi = chiedi_ai_mesi(body.periodo)
     if mesi is None:
         return {"error": "Impossibile determinare il numero di mesi"}
