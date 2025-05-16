@@ -55,7 +55,17 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
         dati = estrai_dati_bolletta(testo)
         if "errore" in dati:
             return {"errore": "Estrazione fallita", "dettagli": dati.get("output")}
+        # Controllo campi minimi necessari
+        campi_obbligatori = ["consumo_kwh", "mesi", "spesa_materia_energia", "tipo_fornitura", "tipologia_cliente"]
 
+        mancanti = [campo for campo in campi_obbligatori if campo not in dati or dati[campo] is None]
+        if mancanti:
+        return {
+        "errore": "Campo mancante nella risposta AI",
+        "mancanti": mancanti,
+        "output_ai": dati
+        }
+    
         confronto_input = {
             "kwh_totali": dati["consumo_kwh"],
             "mesi_bolletta": dati["mesi"],
