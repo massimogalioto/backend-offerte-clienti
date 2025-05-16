@@ -28,7 +28,7 @@ async def upload_cte_pdf(file: UploadFile = File(...)):
 
         return JSONResponse({
             "filename": file.filename,
-            "contenuto_testo": text[:5000]
+            "contenuto_testo": text[:10000]
         })
 
     except Exception as e:
