@@ -61,9 +61,9 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
         mancanti = [campo for campo in campi_obbligatori if campo not in dati or dati[campo] is None]
         if mancanti:
         return {
-        "errore": "Campo mancante nella risposta AI",
-        "mancanti": mancanti,
-        "output_ai": dati
+            "errore": "Campo mancante nella risposta AI",
+            "mancanti": mancanti,
+            "output_ai": dati
         }
     
         confronto_input = {
