@@ -44,8 +44,8 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
 
     try:
         with NamedTemporaryFile(delete=False) as temp_file:
-            contents = await file.read()
-            temp_file.write(contents)
+            file.file.seek(0)  # torna all'inizio del file
+            temp_file.write(file.file.read())
             temp_path = temp_file.name
 
         reader = PdfReader(temp_path)
