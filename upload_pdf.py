@@ -15,7 +15,12 @@ router = APIRouter()
 
 # 📄 Estrazione testo da CTE
 @router.post("/upload-cte")
-async def upload_cte_pdf(file: UploadFile = File(...)):
+async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(None)):
+    secret_key = os.getenv("API_SECRET_KEY")
+    if secret_key and x_api_key != secret_key:
+        raise HTTPException(status_code=401, detail="Chiave API non valida")
+    
+    
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Il file deve essere un PDF")
 
