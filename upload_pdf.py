@@ -3,7 +3,8 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from fastapi.responses import JSONResponse
 from PyPDF2 import PdfReader
 from tempfile import NamedTemporaryFile
-from estrai_dati_bolletta import estrai_dati_bolletta
+from estrai_dati_bolletta import estrai_dati_bolletta # ✅ estrae dati bolletta
+from estrai_dati_cte import estrai_dati_offerta_cte  # ✅ estrae dati cte
 from confronto import confronta_offerte
 from datetime import date
 
@@ -20,8 +21,10 @@ async def upload_cte_pdf(file: UploadFile = File(...)):
 
     try:
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
-            temp.write(await file.read())
-            temp_path = temp.name
+            #temp.write(await file.read())
+            file.file.seek(0)  # torna all'inizio del file
+            temp_file.write(file.file.read())
+            temp_path = temp_file.name
 
         reader = PdfReader(temp_path)
         text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
@@ -30,10 +33,13 @@ async def upload_cte_pdf(file: UploadFile = File(...)):
         if not text.strip():
             raise HTTPException(status_code=422, detail="Non è stato possibile estrarre testo dal PDF")
 
-        return JSONResponse({
+         # ✅ Analizza con OpenAI
+        dati = estrai_dati_offerta_cte(text)
+
+        return {
             "filename": file.filename,
-            "contenuto_testo": text[:10000]
-        })
+            "output_ai": dati  # ✅ Dati strutturati da usare nel frontend
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
