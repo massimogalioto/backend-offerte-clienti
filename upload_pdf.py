@@ -23,8 +23,8 @@ async def upload_cte_pdf(file: UploadFile = File(...)):
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
             #temp.write(await file.read())
             file.file.seek(0)  # torna all'inizio del file
-            temp_file.write(file.file.read())
-            temp_path = temp_file.name
+            temp.write(file.file.read())
+            temp_path = temp.name
 
         reader = PdfReader(temp_path)
         text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
