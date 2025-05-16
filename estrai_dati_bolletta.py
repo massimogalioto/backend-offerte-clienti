@@ -16,10 +16,10 @@ def estrai_dati_bolletta(testo: str) -> dict:
             "- indirizzo (completo del punto di fornitura)\n"
             "- pod (codice POD o PDR, se presente)\n"
             "- kwh_totali (consumo totale nel periodo, solo numero intero ad esempio 1,2,3)\n"
-            "- mesi_bolletta (cerca intervallo fatturato e restituisci il numero dei mesi ad esempio gennaio-febbraio 2025 è uguale a 2 , marzo 2025 uguale a 1, 01/05/2025-30/06/2025 uguale a 2)\n"
+            "- mesi_bolletta (cerca intervallo fatturato e restituisci il numero dei mesi ad esempio gennaio-febbraio 2025 è uguale a 2 , marzo 2025 uguale a 1, 01/05/2025-30/06/2025 uguale a 2 non mettere altro testo)\n"
             "- spesa_materia_energia (costo totale della sola materia energia, restituisci solo il valore numerico con punto decimale)\n"
             "- tipo_fornitura ('Luce' o 'Gas')\n"
-            "- tipologia_cliente  (restituisci Residenziale se è solito Domestico residente o domestico non residente, Business è altri usi)\n\n"
+            "- tipologia_cliente  (restituisci Residenziale se è solito Domestico residente o domestico non residente, Business è altri usi)\n"
             "Rispondi solo con JSON valido, senza commenti o testo extra. Ecco il testo da analizzare:\n\n"
             f"{testo[:7000]}"
         )
