@@ -2,12 +2,12 @@ from airtable_service import get_offerte, get_prezzo_mercato
 from datetime import datetime
 
 def confronta_offerte(bolletta):
-    kwh_totali = bolletta.kwh_totali
-    mesi_bolletta = bolletta.mesi_bolletta
-    spesa_materia_energia = bolletta.spesa_materia_energia
-    tipo_fornitura = bolletta.tipo_fornitura
-    tipologia_cliente = bolletta.tipologia_cliente
-    data = bolletta.data_riferimento
+    kwh_totali = bolletta["kwh_totali"]
+    mesi_bolletta = bolletta["mesi_bolletta"]
+    spesa_materia_energia = bolletta["spesa_materia_energia"]
+    tipo_fornitura = bolletta["tipo_fornitura"]
+    tipologia_cliente = bolletta["tipologia_cliente"]
+    data = bolletta["data_riferimento"]
 
     kwh_mensili = kwh_totali / mesi_bolletta
     spesa_mensile = spesa_materia_energia / mesi_bolletta
