@@ -5,6 +5,10 @@ from PyPDF2 import PdfReader
 from tempfile import NamedTemporaryFile
 from estrai_dati_bolletta import estrai_dati_bolletta
 from confronto import confronta_offerte
+from datetime import date
+
+def data_oggi_iso():
+    return date.today().isoformat()
 
 router = APIRouter()
 
@@ -79,7 +83,7 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
             "spesa_materia_energia": dati["spesa_materia_energia"],
             "tipo_fornitura": dati["tipo_fornitura"],
             "tipologia_cliente": dati["tipologia_cliente"],
-            "data_riferimento": "2025-04-01"  # temporanea
+            "data_riferimento": data_oggi_iso() # la data odierna, la CTE per il confronto deve essere valida ad oggi
         }
 
         offerte = confronta_offerte(confronto_input)
