@@ -75,7 +75,7 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
 
         confronto_input = {
             "kwh_totali": dati["kwh_totali"],
-            "mesi_bolletta": dati["mesi"],
+            "mesi_bolletta": dati["mesi_bolletta"],
             "spesa_materia_energia": dati["spesa_materia_energia"],
             "tipo_fornitura": dati["tipo_fornitura"],
             "tipologia_cliente": dati["tipologia_cliente"],
