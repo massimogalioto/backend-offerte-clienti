@@ -8,7 +8,7 @@ from confronto import confronta_offerte
 
 router = APIRouter()
 
-# 📄 Upload CTE ➝ Estrae solo testo
+# 📄 Estrazione testo da CTE
 @router.post("/upload-cte")
 async def upload_cte_pdf(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
@@ -35,7 +35,7 @@ async def upload_cte_pdf(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
 
 
-# 🧾 Upload bolletta ➝ Estrae, analizza, confronta
+# 🧾 Estrazione + confronto da bolletta PDF
 @router.post("/upload-bolletta")
 async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(None)):
     secret_key = os.getenv("API_SECRET_KEY")
@@ -54,25 +54,32 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
 
         dati = estrai_dati_bolletta(testo)
         if "errore" in dati:
-            return {"errore": "Estrazione fallita", "dettagli": dati.get("output")}
-        # Controllo campi minimi necessari
-        campi_obbligatori = ["consumo_kwh", "mesi", "spesa_materia_energia", "tipo_fornitura", "tipologia_cliente"]
+            return {
+                "errore": "Estrazione fallita",
+                "dettagli": dati.get("output")
+            }
 
+        # ✅ Verifica che tutti i campi necessari siano presenti
+        campi_obbligatori = [
+            "consumo_kwh", "mesi", "spesa_materia_energia",
+            "tipo_fornitura", "tipologia_cliente"
+        ]
         mancanti = [campo for campo in campi_obbligatori if campo not in dati or dati[campo] is None]
+
         if mancanti:
-        return {
-            "errore": "Campo mancante nella risposta AI",
-            "mancanti": mancanti,
-            "output_ai": dati
-        }
-    
+            return {
+                "errore": "Campo mancante nella risposta AI",
+                "mancanti": mancanti,
+                "output_ai": dati
+            }
+
         confronto_input = {
             "kwh_totali": dati["consumo_kwh"],
             "mesi_bolletta": dati["mesi"],
             "spesa_materia_energia": dati["spesa_materia_energia"],
             "tipo_fornitura": dati["tipo_fornitura"],
             "tipologia_cliente": dati["tipologia_cliente"],
-            "data_riferimento": "2025-04-01"
+            "data_riferimento": "2025-04-01"  # temporanea
         }
 
         offerte = confronta_offerte(confronto_input)
