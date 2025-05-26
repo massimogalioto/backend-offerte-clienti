@@ -22,7 +22,7 @@ def estrai_dati_offerta_cte(testo: str) -> dict:
             "- costo_fisso (potresti trovarlo scritto anche come  commercializzazione o PCV, se l'importo è maggiore di 30 euro dividilo per 12 e mostra il risultato)\n"
             "- validita (data in formato 'YYYY-MM-DD', oppure null se non disponibile)\n"
             "- vincoli (es. 'Durata minima 12 mesi') o null\n"
-            "- tipo_fornitura (Luce o Gas)\n\n"
+            "- tipo_fornitura (Luce o Gas se sono presenti tutti e due scegli sempre solo LUCE)\n\n"
             "Testo da analizzare:\n"
             f"{testo[:7000]}"
         )
