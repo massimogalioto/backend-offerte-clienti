@@ -19,7 +19,7 @@ def estrai_dati_offerta_cte(testo: str) -> dict:
             "- tariffa (Fisso o Variabile)\n"
             "- prezzo_kwh (considera il prezzo della materia energia sia essa energia elettica o gas solo se tariffa Fisso, es. 0.145) oppure null\n"
             "- spread (considera il prezzo della materia energia sia essa energia elettrica o gas solo se tariffa Variabile, potresti trovarlo scritto anche come contributo al consumo o parametro alfa es. 0.0135) oppure null\n"
-            "- costo_fisso (potresti trovarlo scritto anche come  commercializzazione o PCV, se l'importo è maggiore di 30 euro dividilo per 12 e mostra il risultato)\n"
+            "- costo_fisso (potresti trovarlo scritto anche come  commercializzazione o CCV, se l'importo è maggiore di 30 euro dividilo per 12 e mostra il risultato)\n"
             "- validita (data in formato 'YYYY-MM-DD', oppure se non disponibile aggiungi 3 mesi alla data di caricamento)\n"
             "- vincoli (es. 'Durata minima 12 mesi') o null\n"
             "- tipo_fornitura (Luce o Gas se sono presenti tutti e due scegli sempre solo LUCE)\n\n"
