@@ -28,7 +28,7 @@ def estrai_dati_offerta_cte(testo: str) -> dict:
         )
 
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo-0125",
             messages=[
                 {"role": "system", "content": "Sei un assistente esperto in offerte luce e gas."},
                 {"role": "user", "content": prompt}
