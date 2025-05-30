@@ -20,7 +20,7 @@ def estrai_dati_bolletta(testo: str) -> dict:
             "- spesa_materia_energia (costo totale della sola materia energia, restituisci solo il valore numerico con punto decimale)\n"
             "- tipo_fornitura ('Luce' o 'Gas')\n"
             "- tipologia_cliente  (restituisci Residenziale se è Domestico residente o domestico non residente, Business è altri usi)\n"
-            "Rispondi solo con JSON valido, senza commenti, testo extra o simboli come ```json. Ecco il testo da analizzare:\n\n"
+            "se trovi più corrispondenze per lo stesso dato restituisci il primo che trovi, Rispondi solo con JSON valido, senza commenti, testo extra o simboli come ```json. Ecco il testo da analizzare:\n\n"
             f"{testo[:7000]}"
         )
 
