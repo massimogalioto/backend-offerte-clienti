@@ -23,6 +23,7 @@ def estrai_dati_offerta_cte(testo: str) -> dict:
             "- validita (data in formato 'YYYY-MM-DD', oppure se non disponibile aggiungi 3 mesi alla data di caricamento)\n"
             "- vincoli (es. 'Durata minima 12 mesi') o null\n"
             "- tipo_fornitura (Luce o Gas se sono presenti tutti e due scegli sempre solo LUCE)\n\n"
+            "Rispondi solo con JSON valido, senza commenti o testo extra. Ecco il testo da analizzare:\n\n"
             "Testo da analizzare:\n"
             f"{testo[:7000]}"
         )
