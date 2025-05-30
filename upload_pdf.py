@@ -35,10 +35,11 @@ async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(N
         reader = PdfReader(temp_path)
         text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
         os.remove(temp_path)
-
+        
         if not text.strip():
             raise HTTPException(status_code=422, detail="Non è stato possibile estrarre testo dal PDF")
 
+              
          # ✅ Analizza con OpenAI
         dati = estrai_dati_offerta_cte(text)
 
@@ -67,6 +68,11 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
         reader = PdfReader(temp_path)
         testo = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
         os.remove(temp_path)
+
+
+
+        if not testo.strip():  # modificato (2025-05-30)
+            raise HTTPException(status_code=422, detail="Errore: PDF privo di testo estraibile")  # modificato (2025-05-30)
 
         dati = estrai_dati_bolletta(testo)
         if "errore" in dati:
