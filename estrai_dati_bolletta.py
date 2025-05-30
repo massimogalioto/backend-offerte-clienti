@@ -31,7 +31,7 @@ def estrai_dati_bolletta(testo: str) -> dict:
                 {"role": "user", "content": prompt}
             ],
             temperature=0.2,
-            max_tokens=700
+            max_tokens=1700
         )
 
         content = response.choices[0].message.content
