@@ -8,24 +8,10 @@ from estrai_dati_cte import estrai_dati_offerta_cte  # ✅ estrae dati cte
 from confronto import confronta_offerte
 from datetime import date
 
-from pdf2image import convert_from_path #nuovo per lettura anche scansioni
-from PIL import Image #nuovo per lettura anche scansioni
-import pytesseract #nuovo per lettura anche scansioni
 
 def data_oggi_iso():
     return date.today().isoformat()
-def estrai_testo_con_ocr(pdf_path, lang='ita'):
-    """
-    Estrae testo da PDF scansionati (immagine) usando OCR (Tesseract).
-    """
-    try:
-        immagini = convert_from_path(pdf_path)
-        testo_ocr = ""
-        for pagina in immagini:
-            testo_ocr += pytesseract.image_to_string(pagina, lang=lang)
-        return testo_ocr.strip()
-    except Exception as e:
-        return ""
+
 router = APIRouter()
 
 # 📄 Estrazione testo da CTE
