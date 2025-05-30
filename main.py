@@ -7,6 +7,7 @@ from upload_pdf import router as upload_router
 from analizza_cte import router as analizza_router
 from salva_offerta_endpoint import router as salva_offerta_router
 from analizza_bolletta import router as analizza_bolletta_router
+from estrai-testo-pdf import router as estrai_testo_pdf_router
 import os
 
 app = FastAPI(
@@ -29,6 +30,7 @@ app.include_router(upload_router)
 app.include_router(analizza_router)
 app.include_router(salva_offerta_router)
 app.include_router(analizza_bolletta_router)
+app.include_router(estrai_testo_pdf_router)
 
 # 📦 Modelli dati
 class BollettaInput(BaseModel):
