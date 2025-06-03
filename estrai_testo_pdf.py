@@ -1,12 +1,14 @@
+# estrai-testo-pdf.py
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
-from PyPDF2 import PdfReader
 from tempfile import NamedTemporaryFile
+from pdf2image import convert_from_path  # 🆕 #modificato (2025-06-03)
+import pytesseract  # 🆕 #modificato (2025-06-03)
 import os
 
 router = APIRouter()
 
-@router.post("/estrai-testo-pdf", summary="Estrai testo da un PDF", tags=["Utility"])
+@router.post("/estrai-testo-pdf", summary="Estrai testo da un PDF con OCR", tags=["Utility"])  #modificato (2025-06-03)
 async def estrai_testo_pdf(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Il file deve essere un PDF")
@@ -17,16 +19,21 @@ async def estrai_testo_pdf(file: UploadFile = File(...)):
             temp.write(file.file.read())
             temp_path = temp.name
 
-        reader = PdfReader(temp_path)
-        testo = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+        # 🆕 Converti tutte le pagine PDF in immagini
+        immagini = convert_from_path(temp_path, dpi=300)  #modificato (2025-06-03)
+
+        testo_estratto = ""
+        for img in immagini:
+            testo_estratto += pytesseract.image_to_string(img, lang="ita") + "\n"  #modificato (2025-06-03)
+
         os.remove(temp_path)
 
-        if not testo.strip():
-            raise HTTPException(status_code=422, detail="Testo non estratto dal PDF")
+        if not testo_estratto.strip():
+            raise HTTPException(status_code=422, detail="OCR non ha estratto testo utile")
 
         return JSONResponse({
             "filename": file.filename,
-            "contenuto_testo": testo[:10000]  # Limite per evitare overflow
+            "contenuto_testo": testo_estratto[:10000]  #modificato (2025-06-03)
         })
 
     except Exception as e:
