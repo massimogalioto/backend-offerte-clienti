@@ -1,71 +1,20 @@
+#modificato (2025-06-02)
 import os
-import pytesseract  # 🧠 #nuova modifica (2025-05-30)
 from fastapi import APIRouter, UploadFile, File, HTTPException, Header
-from PyPDF2 import PdfReader
+from fastapi.responses import JSONResponse
 from tempfile import NamedTemporaryFile
-from PIL import Image  # 🧠 #nuova modifica (2025-05-30)
-from pdf2image import convert_from_path  # 🧠 #nuova modifica (2025-05-30)
-from estrai_dati_bolletta import estrai_dati_bolletta
-from estrai_dati_cte import estrai_dati_offerta_cte
+from estrai_dati_bolletta import estrai_dati_bolletta  # ✅ estrae dati bolletta
 from confronto import confronta_offerte
 from datetime import date
+from pdf2image import convert_from_path  #modificato (2025-06-02)
+import pytesseract  #modificato (2025-06-02)
 
 def data_oggi_iso():
     return date.today().isoformat()
 
 router = APIRouter()
 
-# 📄 Funzione OCR + estrazione testo #nuova modifica (2025-05-30)
-def estrai_testo_pdf_con_ocr(percorso_pdf):
-    testo = ""
-    try:
-        reader = PdfReader(percorso_pdf)
-        testo = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
-    except:
-        pass
-
-    if not testo.strip():
-        immagini = convert_from_path(percorso_pdf)
-        for img in immagini:
-            testo += pytesseract.image_to_string(img)
-
-    return testo
-
-
-# 📄 Endpoint CTE
-@router.post("/upload-cte")
-async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(None)):
-    secret_key = os.getenv("API_SECRET_KEY")
-    if secret_key and x_api_key != secret_key:
-        raise HTTPException(status_code=401, detail="Chiave API non valida")
-
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Il file deve essere un PDF")
-
-    try:
-        with NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
-            file.file.seek(0)
-            temp.write(file.file.read())
-            temp_path = temp.name
-
-        testo = estrai_testo_pdf_con_ocr(temp_path)  # 🧠 #nuova modifica (2025-05-30)
-        os.remove(temp_path)
-
-        if not testo.strip():
-            raise HTTPException(status_code=422, detail="Non è stato possibile estrarre testo dal PDF")
-
-        dati = estrai_dati_offerta_cte(testo)
-
-        return {
-            "filename": file.filename,
-            "output_ai": dati
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
-
-
-# 🧾 Endpoint Bolletta
+# 🧾 Estrazione + confronto da bolletta PDF
 @router.post("/upload-bolletta")
 async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(None)):
     secret_key = os.getenv("API_SECRET_KEY")
@@ -78,11 +27,16 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
             temp_file.write(file.file.read())
             temp_path = temp_file.name
 
-        testo = estrai_testo_pdf_con_ocr(temp_path)  # 🧠 #nuova modifica (2025-05-30)
+        #modificato (2025-06-02) - OCR SEMPRE ATTIVO
+        images = convert_from_path(temp_path)
+        testo = ""
+        for image in images:
+            testo += pytesseract.image_to_string(image, lang='ita')
+
         os.remove(temp_path)
 
         if not testo.strip():
-            raise HTTPException(status_code=422, detail="Errore: PDF privo di testo estraibile")
+            raise HTTPException(status_code=422, detail="Errore: OCR non ha rilevato testo")
 
         dati = estrai_dati_bolletta(testo)
         if "errore" in dati:
@@ -91,6 +45,7 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
                 "dettagli": dati.get("output")
             }
 
+        # ✅ Verifica che tutti i campi necessari siano presenti
         campi_obbligatori = [
             "kwh_totali", "mesi_bolletta", "spesa_materia_energia",
             "tipo_fornitura", "tipologia_cliente"
