@@ -4,6 +4,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Header
 from fastapi.responses import JSONResponse
 from tempfile import NamedTemporaryFile
 from estrai_dati_bolletta import estrai_dati_bolletta  # ✅ estrae dati bolletta
+from estrai_dati_cte import estrai_dati_offerta_cte
 from confronto import confronta_offerte
 from datetime import date
 from pdf2image import convert_from_path  #modificato (2025-06-02)
