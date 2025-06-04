@@ -8,6 +8,7 @@ from confronto import confronta_offerte
 from datetime import date
 from pdf2image import convert_from_path  #modificato (2025-06-02)
 import pytesseract  #modificato (2025-06-02)
+import traceback  # 👈 #nuova modifica (2025-06-04)
 
 def data_oggi_iso():
     return date.today().isoformat()
@@ -76,4 +77,6 @@ async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(
         }
 
     except Exception as e:
+        print("❌ Errore interno:", str(e))  # 👈 #nuova modifica (2025-06-04)
+        traceback.print_exc()                # 👈 #nuova modifica (2025-06-04)
         raise HTTPException(status_code=500, detail=str(e))
