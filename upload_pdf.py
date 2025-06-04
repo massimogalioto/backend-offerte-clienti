@@ -15,6 +15,51 @@ def data_oggi_iso():
 
 router = APIRouter()
 
+# 📄 Estrazione testo da CTE usando OCR
+@router.post("/upload-cte")
+async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(None)):
+    secret_key = os.getenv("API_SECRET_KEY")
+    if secret_key and x_api_key != secret_key:
+        raise HTTPException(status_code=401, detail="Chiave API non valida")
+
+    if not file.filename.endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Il file deve essere un PDF")
+
+    try:
+        with NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
+            file.file.seek(0)
+            temp.write(file.file.read())
+            temp_path = temp.name
+
+        # ✅ Converti PDF in immagini (una per pagina)
+        images = convert_from_path(temp_path)
+
+        # ✅ Estrai testo da ogni pagina con Tesseract OCR
+        text = ""
+        for i, image in enumerate(images):
+            page_text = pytesseract.image_to_string(image, lang="ita")
+            text += f"\n--- Pagina {i+1} ---\n{page_text}"
+
+        os.remove(temp_path)
+
+        if not text.strip():
+            raise HTTPException(status_code=422, detail="Non è stato possibile estrarre testo dal PDF")
+
+        # ✅ Analizza con OpenAI o altra funzione AI
+        dati = estrai_dati_offerta_cte(text)
+
+        return {
+            "filename": file.filename,
+            "output_ai": dati
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Errore durante l'elaborazione: {str(e)}")
+
+
+
+
+
 # 🧾 Estrazione + confronto da bolletta PDF
 @router.post("/upload-bolletta")
 async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(None)):
