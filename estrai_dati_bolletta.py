@@ -11,7 +11,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def estrai_dati_bolletta(testo: str) -> dict:
     try:
         prompt = (
-            "Estrai i dati principali da una bolletta di energia elettrica o gas e restituiscili in formato JSON con i seguenti campi:\n\n"
+            " sei un esperto di fatturazione energia elettrica e gas, Estrai i dati principali da una bolletta di energia elettrica o gas e restituiscili in formato JSON con i seguenti campi:\n\n"
             "- cliente (nome e cognome o ragione sociale)\n"
             "- indirizzo (completo del punto di fornitura)\n"
             "- pod (codice POD o PDR, se presente)\n"
@@ -19,7 +19,7 @@ def estrai_dati_bolletta(testo: str) -> dict:
             "- mesi_bolletta (cerca periodo di fatturazione e restituisci il numero dei mesi ad esempio gennaio-febbraio 2025 è uguale a 2 , marzo 2025 uguale a 1, 01/05/2025-30/06/2025 uguale a 2 non mettere altro testo)\n"
             "- spesa_materia_energia (costo totale della sola materia energia, restituisci solo il valore numerico con punto decimale)\n"
             "- tipo_fornitura ('Luce' o 'Gas')\n"
-            "- tipologia_cliente  (restituisci Residenziale se non è Altri Usi, Business se è altri usi)\n"
+            "- tipologia_cliente  (restituisci esclusivamente Residenziale se non è Altri Usi, Business se è altri usi)\n"
             "se trovi più corrispondenze per lo stesso dato restituisci il primo che trovi, Rispondi solo con JSON valido, senza commenti, testo extra o simboli come ```json. Ecco il testo da analizzare:\n\n"
             f"{testo[:7000]}"
         )
