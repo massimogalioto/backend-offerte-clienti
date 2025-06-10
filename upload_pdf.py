@@ -18,10 +18,10 @@ router = APIRouter()
 
 # 📄 Estrazione testo da CTE usando OCR
 @router.post("/upload-cte")
-async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(None)):
-    secret_key = os.getenv("API_SECRET_KEY")
-    if secret_key and x_api_key != secret_key:
-        raise HTTPException(status_code=401, detail="Chiave API non valida_")
+async def upload_bolletta(request: Request, file: UploadFile = File(...)):
+    origin = request.headers.get("origin")
+    if origin != "https://madonieluce.com":
+        raise HTTPException(status_code=403, detail="Accesso non autorizzato")
         
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Il file deve essere un PDF")
@@ -63,10 +63,10 @@ async def upload_cte_pdf(file: UploadFile = File(...), x_api_key: str = Header(N
 
 # 🧾 Estrazione + confronto da bolletta PDF
 @router.post("/upload-bolletta")
-async def upload_bolletta(file: UploadFile = File(...), x_api_key: str = Header(None)):
-    secret_key = os.getenv("API_SECRET_KEY")
-    if secret_key and x_api_key != secret_key:
-        raise HTTPException(status_code=401, detail="Chiave API non valida")
+async def upload_bolletta(request: Request, file: UploadFile = File(...)):
+    origin = request.headers.get("origin")
+    if origin != "https://madonieluce.com":
+        raise HTTPException(status_code=403, detail="Accesso non autorizzato")
 
     try:
         with NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
