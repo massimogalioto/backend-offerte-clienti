@@ -1,6 +1,6 @@
 #modificato (2025-06-02)
 import os
-from fastapi import APIRouter, UploadFile, File, HTTPException, Header
+from fastapi import APIRouter, UploadFile, File, HTTPException, Header, Request
 from fastapi.responses import JSONResponse
 from tempfile import NamedTemporaryFile
 from estrai_dati_bolletta import estrai_dati_bolletta  # ✅ estrae dati bolletta
