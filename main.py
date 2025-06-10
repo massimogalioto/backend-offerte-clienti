@@ -19,7 +19,7 @@ app = FastAPI(
 # CORS (in produzione metti il dominio del frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Es: ["https://madonie-front.vercel.app"]
+    allow_origins=["https://www.madonieluce.com"],  # Es: ["https://madonie-front.vercel.app"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
